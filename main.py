@@ -24,29 +24,27 @@ class MainWindow(QMainWindow):
 
     def buttonClicked(self):
         count_clusters = self.ui.spinBox.value()
-        data = self.data
-        X = data[['Цена', 'Пробег', 'Год', 'Владельцы']]
 
         if self.ui.dendrogramRadioButton.isChecked():
-            s, db, ch = dendrogram_method(count_clusters, X)
+            s, db, ch = dendrogram_method(count_clusters, self.X)
             self.ui.labelDendSil.setText(str(s))
             self.ui.labelDendDav.setText(str(db))
             self.ui.labelDendCal.setText(str(ch))
 
         if self.ui.dbscanRadioButton.isChecked():
-            s, db, ch = dbscan_method(X)
+            s, db, ch = dbscan_method(self.X)
             self.ui.labelDBScanSil.setText(str(s))
             self.ui.labelDBScanDav.setText(str(db))
             self.ui.labelDBScanCal.setText(str(ch))
 
         if self.ui.spectralRadioButton.isChecked():
-            s, db, ch = spectral_method(count_clusters, X)
+            s, db, ch = spectral_method(count_clusters, self.X)
             self.ui.labelSpecSil.setText(str(s))
             self.ui.labelSpecDav.setText(str(db))
             self.ui.labelSpecCal.setText(str(ch))
             
         if self.ui.kmeansRadioButton.isChecked():
-            s, db, ch = kMeans_method(count_clusters, X)
+            s, db, ch = kMeans_method(count_clusters, self.X)
             self.ui.labelKMSil.setText(s)
             self.ui.labelKMDav.setText(db)
             self.ui.labelKMCal.setText(ch)
@@ -60,16 +58,10 @@ class MainWindow(QMainWindow):
             # Загрузка данных из выбранного файла
             self.data = pd.read_csv(file_path)
             self.X = self.data[['Цена', 'Пробег', 'Год', 'Владельцы']]
-                
-            # Отображаем путь к файлу и информацию о данных
-            print("Данные загружены:")
-            print(self.X.head())  # Вывод первых 5 строк для проверки
 
     # Функция для кнопки коэффициента силуэта
     def silhouette_button(self):
-        data = self.data  # Убедитесь, что путь к файлу корректный
-        X = data[['Цена', 'Пробег', 'Год', 'Владельцы']]
-        draw_silhouette(X)
+        draw_silhouette(self.X)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
