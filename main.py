@@ -1,26 +1,30 @@
 import sys
 import pandas as pd
 from model import kMeans_method, dendrogram_method, dbscan_method, spectral_method, draw_silhouette
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 from PyQt5 import QtCore, QtWidgets, uic
 from GUIforClustering import Ui_MainWindow  # Убедитесь, что GUIforClustering находится в том же каталоге
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.data = None
+        self.X = None
         
         # Подключение кнопок
         self.ui.labelOcenka.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.labelQuantity.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.spinBox.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.result_button.clicked.connect(self.buttonClicked)
-        self.ui.silhouette_button.clicked.connect(silhouette_button)
+        self.ui.silhouette_button.clicked.connect(self.silhouette_button)
+        self.ui.openFileButton.clicked.connect(self.open_file)
 
     def buttonClicked(self):
         count_clusters = self.ui.spinBox.value()
-        data = pd.read_csv(r'E:/PythonDinarDiploma/cars.csv')
+        data = self.data
         X = data[['Цена', 'Пробег', 'Год', 'Владельцы']]
 
         if self.ui.dendrogramRadioButton.isChecked():
@@ -47,14 +51,25 @@ class MainWindow(QMainWindow):
             self.ui.labelKMDav.setText(db)
             self.ui.labelKMCal.setText(ch)
 
+    def open_file(self):
+        # Открываем диалоговое окно для выбора файла
+        file_dialog = QFileDialog()
+        file_path, _ = file_dialog.getOpenFileName(self, "Выберите CSV файл", "", "CSV Files (*.csv);;All Files (*)")
+            
+        if file_path:
+            # Загрузка данных из выбранного файла
+            self.data = pd.read_csv(file_path)
+            self.X = self.data[['Цена', 'Пробег', 'Год', 'Владельцы']]
+                
+            # Отображаем путь к файлу и информацию о данных
+            print("Данные загружены:")
+            print(self.X.head())  # Вывод первых 5 строк для проверки
 
-# Функция для кнопки коэффициента силуэта
-def silhouette_button():
-    data = pd.read_csv(r'E:/PythonDinarDiploma/cars.csv')  # Убедитесь, что путь к файлу корректный
-    X = data[['Цена', 'Пробег', 'Год', 'Владельцы']]
-    draw_silhouette(X)
-
-
+    # Функция для кнопки коэффициента силуэта
+    def silhouette_button(self):
+        data = self.data  # Убедитесь, что путь к файлу корректный
+        X = data[['Цена', 'Пробег', 'Год', 'Владельцы']]
+        draw_silhouette(X)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
