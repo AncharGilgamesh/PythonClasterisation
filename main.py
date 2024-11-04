@@ -3,7 +3,7 @@ import pandas as pd
 from model import kMeans_method, dendrogram_method, dbscan_method, spectral_method, draw_silhouette
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 from PyQt5 import QtCore, QtWidgets, uic
-from GUIforClustering import Ui_MainWindow  # Убедитесь, что GUIforClustering находится в том же каталоге
+from GUIforClustering import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
