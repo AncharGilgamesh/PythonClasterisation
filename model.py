@@ -99,11 +99,6 @@ def dendrogram_method(count_clusters, X):
         silhouette_avg = silhouette_score(X[['Пробег', 'Цена']], cluster_labels)
         silhouette_scores.append(silhouette_avg)
     # Визуализация коэффициента сиулэта
-    plt.plot(range(2,11), silhouette_scores, 'bo-')
-    plt.xlabel('Number of clusters')
-    plt.ylabel('Silhouette score')
-    plt.title('Silhouette Method For Optimal')
-    plt.show()
     Z_centroid = linkage(X[['Цена', 'Пробег', 'Год', 'Владельцы']], 
     method='centroid', metric='euclidean')
     # Вычисление коэффициента силуэтта
@@ -135,3 +130,19 @@ def dendrogram_method(count_clusters, X):
     plt.title('Centroid linkage')
     plt.show()
     return s, db, ch
+
+def draw_silhouette(X):
+    silhouette_scores = []
+
+    for n_clusters in range(2, 11):
+        kmeans = KMeans(n_clusters=n_clusters)
+        cluster_labels = kmeans.fit_predict(X)
+        silhouette_avg = silhouette_score(X, cluster_labels)
+        silhouette_scores.append(silhouette_avg)
+
+    # Визуализация коэффициента силуэта
+    plt.plot(range(2, 11), silhouette_scores, 'bo-')
+    plt.xlabel('Number of clusters')
+    plt.ylabel('Silhouette score')
+    plt.title('Silhouette Method For Optimal k')
+    plt.show()
