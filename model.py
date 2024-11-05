@@ -1,7 +1,4 @@
-import sys
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 from sklearn.cluster import DBSCAN, KMeans, SpectralClustering
 from sklearn.metrics import silhouette_score, pairwise_distances, davies_bouldin_score, calinski_harabasz_score

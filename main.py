@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
 from model import kMeans_method, dendrogram_method, dbscan_method, spectral_method, draw_silhouette
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog, QMessageBox
 from PyQt5 import QtCore, QtWidgets, uic
 from GUIforClustering import Ui_MainWindow
 
@@ -21,9 +21,16 @@ class MainWindow(QMainWindow):
         self.ui.result_button.clicked.connect(self.buttonClicked)
         self.ui.silhouette_button.clicked.connect(self.silhouette_button)
         self.ui.openFileButton.clicked.connect(self.open_file)
+        self.ui.result_button.setEnabled(False)
+
+    def perform_check(self):
+        QMessageBox.warning(self, "Ошибка", "Проверка не пройдена!")
+        return
 
     def buttonClicked(self):
         count_clusters = self.ui.spinBox.value()
+        if not count_clusters:
+            self.perform_check()
 
         if self.ui.dendrogramRadioButton.isChecked():
             s, db, ch = dendrogram_method(count_clusters, self.X)
@@ -58,10 +65,16 @@ class MainWindow(QMainWindow):
             # Загрузка данных из выбранного файла
             self.data = pd.read_csv(file_path)
             self.X = self.data[['Цена', 'Пробег', 'Год', 'Владельцы']]
+            self.ui.result_button.setEnabled(True)
+            self.ui.kmeansRadioButton.setChecked(True)
 
     # Функция для кнопки коэффициента силуэта
     def silhouette_button(self):
-        draw_silhouette(self.X)
+        try:
+            draw_silhouette(self.X)
+        except:
+            self.perform_check()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
